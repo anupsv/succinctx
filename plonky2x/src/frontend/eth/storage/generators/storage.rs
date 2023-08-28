@@ -13,7 +13,7 @@ use plonky2::util::serialization::{Buffer, IoResult, Read, Write};
 use tokio::runtime::Runtime;
 
 use crate::frontend::builder::CircuitBuilder;
-use crate::frontend::eth::storage::vars::{EthAccountVariable, EthAccount};
+use crate::frontend::eth::storage::vars::{EthAccount, EthAccountVariable};
 use crate::frontend::eth::utils::u256_to_h256_be;
 use crate::frontend::eth::vars::AddressVariable;
 use crate::frontend::vars::{Bytes32Variable, CircuitVariable};
@@ -174,21 +174,22 @@ impl<F: RichField + Extendable<D>, const D: usize> SimpleGenerator<F, D>
         });
         // Copy u64 into U256
         let mut bytes = [0u8; 8];
-        result
-            .nonce
-            .to_big_endian(&mut bytes);
+        result.nonce.to_big_endian(&mut bytes);
         // Append 24 zero bytes to the beginning of the number
         let mut total_bytes = [0u8; 32];
         total_bytes[24..].copy_from_slice(&bytes);
 
         let nonce = ethers::types::U256::from_big_endian(&total_bytes);
 
-        self.value.set(buffer, EthAccount {
-            balance: result.balance,
-            code_hash: result.code_hash,
-            nonce,
-            storage_hash: result.storage_hash,
-        });
+        self.value.set(
+            buffer,
+            EthAccount {
+                balance: result.balance,
+                code_hash: result.code_hash,
+                nonce,
+                storage_hash: result.storage_hash,
+            },
+        );
     }
 
     #[allow(unused_variables)]

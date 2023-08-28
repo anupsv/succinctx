@@ -1,9 +1,9 @@
-use ethers::types::{U256};
+use ethers::types::U256;
 use plonky2::field::extension::Extendable;
 use plonky2::hash::hash_types::RichField;
 
 use super::generators::block::EthBlockGenerator;
-use super::generators::storage::{EthStorageProofGenerator, EthAccountProofGenerator};
+use super::generators::storage::{EthAccountProofGenerator, EthStorageProofGenerator};
 use super::vars::{EthAccountVariable, EthHeaderVariable, EthLogVariable};
 use crate::frontend::builder::CircuitBuilder;
 use crate::frontend::eth::vars::AddressVariable;
@@ -67,7 +67,7 @@ mod tests {
     use plonky2::plonk::config::PoseidonGoldilocksConfig;
 
     use super::*;
-    use crate::frontend::eth::storage::vars::{EthHeader, EthAccount};
+    use crate::frontend::eth::storage::vars::{EthAccount, EthHeader};
     use crate::prelude::CircuitBuilderX;
     use crate::utils::{address, bytes32};
 
@@ -161,8 +161,12 @@ mod tests {
             EthAccount {
                 nonce: U256::from(1),
                 balance: U256::from(0),
-                code_hash: bytes32!("0xb9c1c929064cd21734c102a698e68bf617feefcfa5a9f62407c45401546736bf"),
-                storage_hash: bytes32!("0x073d71569b4b986bc20b6921dbbc1b74145588f765627dd5e566d65a6b7b33cc"),
+                code_hash: bytes32!(
+                    "0xb9c1c929064cd21734c102a698e68bf617feefcfa5a9f62407c45401546736bf"
+                ),
+                storage_hash: bytes32!(
+                    "0x073d71569b4b986bc20b6921dbbc1b74145588f765627dd5e566d65a6b7b33cc"
+                ),
             },
         );
 
