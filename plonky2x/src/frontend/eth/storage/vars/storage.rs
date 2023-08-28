@@ -62,10 +62,11 @@ impl CircuitVariable for EthProofVariable {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct EthAccount {
     pub balance: U256,
     pub code_hash: H256,
+    // Update to U64 once we have U64 variables
     pub nonce: U256,
     pub storage_hash: H256,
 }
@@ -74,6 +75,7 @@ pub struct EthAccount {
 pub struct EthAccountVariable {
     pub balance: U256Variable,
     pub code_hash: Bytes32Variable,
+    // Update to U64 once we have U64 variables
     pub nonce: U256Variable,
     pub storage_hash: Bytes32Variable,
 }
@@ -115,11 +117,13 @@ impl CircuitVariable for EthAccountVariable {
 
     fn from_variables(variables: &[Variable]) -> Self {
         let balance = U256Variable::from_variables(&variables[0..4]);
-        let code_hash = Bytes32Variable::from_variables(&variables[4..4 + 32 * 8]);
-        let offset = 4 + 32 * 8;
+        let mut offset = 4;
+        let code_hash = Bytes32Variable::from_variables(&variables[offset..offset + 32 * 8]);
+        offset += 32 * 8;
         let nonce = U256Variable::from_variables(&variables[offset..offset + 4]);
+        offset += 4;
         let storage_hash =
-            Bytes32Variable::from_variables(&variables[offset + 4..offset + 4 + 32 * 8]);
+            Bytes32Variable::from_variables(&variables[offset..offset + 32 * 8]);
         Self {
             balance,
             code_hash,
