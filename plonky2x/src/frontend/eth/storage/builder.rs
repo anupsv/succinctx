@@ -232,5 +232,7 @@ mod tests {
                 number: U256::from("0x110d56b"),
             }
         );
+
+        let _ = circuit.serialize().unwrap();
     }
 }
