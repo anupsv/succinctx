@@ -148,7 +148,7 @@ impl CircuitVariable for EthAccountVariable {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct EthLog {
     pub address: Address,
     pub topics: [H256; 3],
