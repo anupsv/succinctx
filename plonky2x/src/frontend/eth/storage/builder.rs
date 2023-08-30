@@ -3,7 +3,9 @@ use plonky2::field::extension::Extendable;
 use plonky2::hash::hash_types::RichField;
 
 use super::generators::block::EthBlockGenerator;
-use super::generators::storage::{EthAccountProofGenerator, EthStorageProofGenerator, EthStorageKeyGenerator};
+use super::generators::storage::{
+    EthAccountProofGenerator, EthStorageKeyGenerator, EthStorageProofGenerator,
+};
 use super::vars::{EthAccountVariable, EthHeaderVariable, EthLogVariable};
 use crate::frontend::builder::CircuitBuilder;
 use crate::frontend::eth::vars::AddressVariable;
@@ -71,8 +73,8 @@ mod tests {
     use plonky2::plonk::config::PoseidonGoldilocksConfig;
 
     use super::*;
-    use crate::frontend::eth::storage::vars::{EthAccount, EthHeader};
     use crate::frontend::eth::storage::utils::get_map_storage_location;
+    use crate::frontend::eth::storage::vars::{EthAccount, EthHeader};
     use crate::prelude::CircuitBuilderX;
     use crate::utils::{address, bytes32};
 

@@ -13,8 +13,8 @@ use plonky2::util::serialization::{Buffer, IoResult, Read, Write};
 use tokio::runtime::Runtime;
 
 use crate::frontend::builder::CircuitBuilder;
-use crate::frontend::eth::storage::vars::{EthAccount, EthAccountVariable};
 use crate::frontend::eth::storage::utils::get_map_storage_location;
+use crate::frontend::eth::storage::vars::{EthAccount, EthAccountVariable};
 use crate::frontend::eth::utils::u256_to_h256_be;
 use crate::frontend::eth::vars::AddressVariable;
 use crate::frontend::uint::uint256::U256Variable;
