@@ -3,8 +3,7 @@ use plonky2::hash::hash_types::RichField;
 
 use super::generators::block::EthBlockGenerator;
 use super::generators::storage::{
-    EthAccountProofGenerator, EthStorageKeyGenerator, EthStorageProofGenerator,
-    EthLogGenerator,
+    EthAccountProofGenerator, EthLogGenerator, EthStorageKeyGenerator, EthStorageProofGenerator,
 };
 use super::vars::{EthAccountVariable, EthHeaderVariable, EthLogVariable};
 use crate::frontend::builder::CircuitBuilder;
