@@ -7,15 +7,18 @@ use super::generators::storage::{EthAccountProofGenerator, EthStorageProofGenera
 use super::vars::{EthAccountVariable, EthHeaderVariable, EthLogVariable};
 use crate::frontend::builder::CircuitBuilder;
 use crate::frontend::eth::vars::AddressVariable;
+use crate::frontend::uint::uint256::U256Variable;
 use crate::frontend::vars::Bytes32Variable;
 
 impl<F: RichField + Extendable<D>, const D: usize> CircuitBuilder<F, D> {
     pub fn get_storage_key_at(
         &mut self,
-        _mapping_location: U256,
-        _map_key: Bytes32Variable,
+        mapping_location: U256Variable,
+        map_key: Bytes32Variable,
     ) -> Bytes32Variable {
-        todo!();
+        let generator = EthStorageKeyGenerator::new(self, mapping_location, map_key);
+        self.add_simple_generator(&generator);
+        generator.value
     }
 
     #[allow(non_snake_case)]
@@ -64,10 +67,13 @@ mod tests {
     use std::env;
 
     use ethers::providers::{Http, Provider};
+    use ethers::types::U256;
     use plonky2::plonk::config::PoseidonGoldilocksConfig;
 
     use super::*;
     use crate::frontend::eth::storage::vars::{EthAccount, EthHeader};
+    use crate::frontend::eth::storage::utils::get_map_storage_location;
+    use crate::frontend::eth::storage::vars::EthHeader;
     use crate::prelude::CircuitBuilderX;
     use crate::utils::{address, bytes32};
 
@@ -114,6 +120,55 @@ mod tests {
         assert_eq!(
             circuit_value,
             bytes32!("0x0000000000000000000000dd4bc51496dc93a0c47008e820e0d80745476f2201"),
+        );
+
+        let _ = circuit.serialize().unwrap();
+    }
+
+    #[test]
+    #[cfg_attr(feature = "ci", ignore)]
+    #[allow(non_snake_case)]
+    fn test_get_storage_key_at() {
+        dotenv::dotenv().ok();
+        // This is the circuit definition
+        let mut builder = CircuitBuilderX::new();
+        let mapping_location = builder.read::<U256Variable>();
+        let map_key = builder.read::<Bytes32Variable>();
+
+        let value = builder.get_storage_key_at(mapping_location, map_key);
+        builder.write(value);
+
+        // Build your circuit.
+        let circuit = builder.build::<PoseidonGoldilocksConfig>();
+
+        // Write to the circuit input.
+        let mut input = circuit.input();
+        let mapping_location = U256::from("0x0");
+        // mapping_location
+        input.write::<U256Variable>(mapping_location);
+
+        let map_key =
+            bytes32!("0x281dc31bb78779a1ede7bf0f4d2bc5f07ddebc9f9d1155e413d8804384604bbe");
+        // map_key
+        input.write::<Bytes32Variable>(map_key);
+
+        println!(
+            "storage key: {:?}",
+            get_map_storage_location(mapping_location.as_u128(), map_key)
+        );
+
+        // Generate a proof.
+        let (proof, output) = circuit.prove(&input);
+
+        // Verify proof.
+        circuit.verify(&proof, &input, &output);
+
+        // Read output.
+        let circuit_value = output.read::<Bytes32Variable>();
+        println!("{:?}", circuit_value);
+        assert_eq!(
+            circuit_value,
+            bytes32!("0xca77d4e79102603cb6842afffd8846a3123877159ed214aeadfc4333d595fd50"),
         );
 
         let _ = circuit.serialize().unwrap();
@@ -206,7 +261,7 @@ mod tests {
         // Verify proof.
         circuit.verify(&proof, &input, &output);
 
-        // Read output.
+        // Read output
         let circuit_value = output.read::<EthHeaderVariable>();
         println!("{:?}", circuit_value);
         assert_eq!(

@@ -32,6 +32,11 @@ use crate::frontend::eth::storage::generators::storage::EthStorageProofGenerator
 use crate::frontend::eth::storage::generators::storage::EthAccountProofGenerator;
 use crate::frontend::eth::storage::generators::block::EthBlockGenerator;
 
+use crate::frontend::eth::storage::generators::block::EthBlockGenerator;
+use crate::frontend::eth::storage::generators::storage::{
+    EthStorageKeyGenerator, EthStorageProofGenerator,
+};
+use crate::frontend::hash::keccak::keccak256::Keccack256Generator;
 
 #[macro_export]
 macro_rules! impl_generator_serializer {
@@ -144,6 +149,8 @@ where
         WireSplitGenerator, "WireSplitGenerator",
         EthStorageProofGenerator<F, D>, "EthStorageProofGenerator",
         EthAccountProofGenerator<F, D>, "EthAccountProofGenerator",
+        EthStorageKeyGenerator<F, D>, "EthStorageKeyGenerator",
         EthBlockGenerator<F, D>, "EthBlockGenerator",
+        Keccack256Generator<F, D>, "Keccak256Generator"
     }
 }
